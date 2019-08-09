@@ -22,7 +22,7 @@ public class ParseXml
     {
         try
         {
-            List<ParsedDataSet> a = new parseXmlAsync().execute().get();
+            List<ParsedDataSet> a = new parseXmlAsync(context, s).execute().get();
 
             if (a != null)
             {
@@ -47,6 +47,12 @@ public class ParseXml
 
     private static class parseXmlAsync extends AsyncTask<String, String, List<ParsedDataSet>>
     {
+        String nameFile = null;
+
+        public parseXmlAsync(Context context, String s) {
+            nameFile = s;
+        }
+
         @Override
         protected List<ParsedDataSet> doInBackground(String... strings)
         {
@@ -54,13 +60,18 @@ public class ParseXml
 
             try
             {
+                if (nameFile == null || nameFile.isEmpty() != false)
+                {
+                    return null;
+                }
+
                 // initialize our input source variable
                 InputSource inputSource = null;
 
                 // XML from sdcard
                 // make sure sample.xml is in your root SD card directory
                 File xmlFile = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS) + "/sample.xml");
+                        Environment.DIRECTORY_DOWNLOADS) + "/" + nameFile);
 
                 if (xmlFile.exists() == false)
                 {
